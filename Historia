@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horário de Aulas - História</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilos para abas ativas e inativas */
+        .tab-btn.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl flex-grow">
+        <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
+            <header class="text-center mb-8">
+                <!-- Logotipo -->
+                <div class="flex justify-center items-center mb-4">
+                    <svg class="h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">Consulta de Horários- História/IM</h1>
+                <p class="text-gray-500 mt-2 text-sm sm:text-base">Selecione o tipo de busca e preencha os campos.</p>
+            </header>
+
+            <!-- Abas de Navegação -->
+            <div class="mb-6 border-b border-gray-200">
+                <nav class="flex space-x-2" aria-label="Tabs">
+                    <button id="tab-turma" class="tab-btn active font-medium px-4 py-2 text-sm rounded-t-lg border-b-2">Por Turma</button>
+                    <button id="tab-professor" class="tab-btn font-medium px-4 py-2 text-sm text-gray-500 hover:text-gray-700 border-b-2 border-transparent">Por Professor</button>
+                </nav>
+            </div>
+
+            <!-- Painel de Busca por Turma -->
+            <div id="panel-turma" class="space-y-4">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-grow">
+                        <label for="dia-semana" class="block text-sm font-medium text-gray-700 mb-1">Dia da Semana</label>
+                        <select id="dia-semana" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                            <option value="segunda">Segunda-feira</option>
+                            <option value="terca">Terça-feira</option>
+                            <option value="quarta">Quarta-feira</option>
+                            <option value="quinta">Quinta-feira</option>
+                            <option value="sexta">Sexta-feira</option>
+                        </select>
+                    </div>
+                    <div class="w-full sm:w-40">
+                        <label for="periodo" class="block text-sm font-medium text-gray-700 mb-1">Período</label>
+                        <select id="periodo" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                            <option value="1">1º Período</option>
+                            <option value="2">2º Período</option>
+                            <option value="3">3º Período</option>
+                            <option value="4">4º Período</option>
+                            <option value="5">5º Período</option>
+                            <option value="6">6º Período</option>
+                            <option value="7">7º Período</option>
+                            <option value="8">8º Período</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel de Busca por Professor -->
+            <div id="panel-professor" class="hidden space-y-4">
+                 <div class="flex-grow">
+                    <label for="select-professor" class="block text-sm font-medium text-gray-700 mb-1">Nome do Professor</label>
+                    <select id="select-professor" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                        <!-- Opções de professores serão inseridas aqui via JS -->
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <button id="buscar-btn" class="w-full bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 shadow-md">
+                    Buscar
+                </button>
+            </div>
+
+            <!-- Área de Resultados -->
+            <div id="resultado" class="mt-8">
+                 <div class="text-center text-gray-500 py-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Aguardando sua busca</h3>
+                    <p class="mt-1 text-sm text-gray-500">Selecione os filtros e clique em buscar.</p>
+                </div>
+            </div>
+             <!-- Seção do Link para Horário Completo -->
+            <div class="text-center mt-10 pt-6 border-t">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Consulte o Horário Completo</h3>
+                <a href="https://docs.google.com/spreadsheets/d/1jHW5DmStWUhxcYu2M02_CZefJ6lHaqaWtSugZqFLpmI/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-block bg-green-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 shadow-md">
+                    Abrir Documento
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rodapé com créditos -->
+    <footer class="text-center py-4">
+        <p class="text-sm text-gray-500">Desenvolvido por Fabio Antonio Abreu </p>
+    </footer>
+
+
+    <script>
+        // --- Base de Dados das Disciplinas (CURSO DE HISTÓRIA) ---
+        const cronograma = [
+            // --- SEGUNDA-FEIRA ---
+            { periodo: 1, dia: "segunda", horario: "18:00 - 22:00", disciplina: "TN601 - COMPREENSÃO E PRÁTICA DE TEXTO", professor: "CARMEM PIMENTEL", sala: "204.M" },
+            { periodo: 2, dia: "segunda", horario: "18:00 - 20:00", disciplina: "IM146 - FILOSOFIA E HISTÓRIA", professor: "LEANDRO CHEVITARESE", sala: "303.M" },
+            { periodo: 2, dia: "segunda", horario: "20:00 - 22:00", disciplina: "TM248 - HISTÓRIA ANTIGA", professor: "MARCOS CALDAS", sala: "303.M" },
+            { periodo: 3, dia: "segunda", horario: "18:00 - 20:00", disciplina: "IM205 - HISTÓRIA DA ÁFRICA", professor: "EDUARDO POSSIDONIO", sala: "310.I" },
+            { periodo: 3, dia: "segunda", horario: "20:00 - 22:00", disciplina: "TM719 - SOCIOLOGIA E EDUCAÇÃO", professor: "AHYAS SISS", sala: "310.I" },
+            { periodo: 4, dia: "segunda", horario: "18:00 - 20:00", disciplina: "IM227 - HISTÓRIA DO BRASIL I", professor: "ROBERTO GUEDES", sala: "304.M" },
+            { periodo: 4, dia: "segunda", horario: "20:00 - 22:00", disciplina: "TM186 - POLÍTICA E ORGANIZAÇÃO DA EDUCAÇÃO", professor: "JOSE SOUZA", sala: "304.M" },
+            { periodo: 5, dia: "segunda", horario: "18:00 - 22:00", disciplina: "IM248 - HISTÓRIA DO BRASIL II", professor: "MARCELO BASILE", sala: "302.I" },
+            { periodo: 6, dia: "segunda", horario: "18:00 - 22:00", disciplina: "IM252 - AMÉRICA III", professor: "RAFAEL ALONSO", sala: "304.I" },
+            { periodo: 7, dia: "segunda", horario: "18:00 - 22:00", disciplina: "IM253 - BRASIL IV", professor: "SURAMA PINTO", sala: "303.I" },
+            { periodo: 8, dia: "segunda", horario: "18:00 - 20:00", disciplina: "IM619 - HISTÓRIA DO PODER E DAS IDEIAS POLÍTICAS", professor: "MARCOS CALDAS", sala: "301.I" },
+            { periodo: 8, dia: "segunda", horario: "20:00 - 22:00", disciplina: "TM222 - MESTIÇAGEM, HISTÓRIA DO BRASIL E AS...", professor: "ROBERTO GUEDES", sala: "301.I" },
+
+            // --- TERÇA-FEIRA ---
+            { periodo: 1, dia: "terca", horario: "18:00 - 22:00", disciplina: "TM221 - HISTÓRIA, DESIGUALDADES E DIFERENÇAS", professor: "ALEXANDRE LAZZARI", sala: "204.M" },
+            { periodo: 2, dia: "terca", horario: "18:00 - 22:00", disciplina: "TM249 - HISTÓRIA MEDIEVAL I", professor: "MARCELO BERRIEL", sala: "303.M" },
+            { periodo: 3, dia: "terca", horario: "18:00 - 20:00", disciplina: "TM719 - SOCIOLOGIA E EDUCAÇÃO", professor: "AHYAS SISS", sala: "310.I" },
+            { periodo: 3, dia: "terca", horario: "20:00 - 22:00", disciplina: "IM205 - HISTÓRIA DA ÁFRICA", professor: "EDUARDO POSSIDONIO", sala: "310.I" },
+            { periodo: 4, dia: "terca", horario: "18:00 - 22:00", disciplina: "TM173 - DIDÁTICA", professor: "GRAÇA REIS", sala: "304.M" },
+            { periodo: 5, dia: "terca", horario: "18:00 - 22:00", disciplina: "TM197 - ENSINO DE HISTORIA I", professor: "FABIANE RODRIGUES", sala: "302.I" },
+            { periodo: 6, dia: "terca", horario: "18:00 - 22:00", disciplina: "IM298 - HISTÓRIA DA FORMAÇÃO DO MUNDO ÁRABE", professor: "RAQUEL ALVITOS", sala: "304.I" },
+            { periodo: 7, dia: "terca", horario: "18:00 - 22:00", disciplina: "TM299 - ESTUDOS DE HISTÓRIA X: HISTÓRIA E IMAGEM", professor: "TAINARA VASCONCELLOS", sala: "303.I" },
+            { periodo: 8, dia: "terca", horario: "18:00 - 22:00", disciplina: "TM601 - ESTUDOS DE HISTÓRIA XI: TECNOLOGIA, IA", professor: "MONICA MARTINS", sala: "301.I" },
+
+            // --- QUARTA-FEIRA ---
+            { periodo: 1, dia: "quarta", horario: "18:00 - 22:00", disciplina: "IM223 - INTRODUÇÃO À ANTROPOLOGIA", professor: "LUIZ FELIPE BENITES", sala: "204.M" },
+            { periodo: 2, dia: "quarta", horario: "18:00 - 20:00", disciplina: "TM248 - HISTÓRIA ANTIGA", professor: "MARCOS CALDAS", sala: "303.M" },
+            { periodo: 2, dia: "quarta", horario: "20:00 - 22:00", disciplina: "IM146 - FILOSOFIA E HISTÓRIA", professor: "LEANDRO CHEVITARESE", sala: "303.M" },
+            { periodo: 3, dia: "quarta", horario: "18:00 - 22:00", disciplina: "TM193 - PSICOLOGIA E EDUCAÇÃO", professor: "VIRGÍNIA SCHINDHELM", sala: "310.I" },
+            { periodo: 4, dia: "quarta", horario: "18:00 - 20:00", disciplina: "TM186 - POLÍTICA E ORGANIZAÇÃO DA EDUCAÇÃO", professor: "JOSE SOUZA", sala: "304.M" },
+            { periodo: 4, dia: "quarta", horario: "20:00 - 22:00", disciplina: "IM227 - HISTÓRIA DO BRASIL I", professor: "ROBERTO GUEDES", sala: "304.M" },
+            { periodo: 5, dia: "quarta", horario: "18:00 - 22:00", disciplina: "IM637 - A PENÍNSULA IBÉRICA NO ANTIGO REGIME", professor: "MONICA RIBEIRO", sala: "302.I" },
+            { periodo: 6, dia: "quarta", horario: "18:00 - 22:00", disciplina: "TM198 - ENSINO DE HISTÓRIA II", professor: "ANDRE DE ARAUJO", sala: "304.I" },
+            { periodo: 7, dia: "quarta", horario: "18:00 - 22:00", disciplina: "IM254 - HISTÓRIA CONTEMPORÂNEA II", professor: "JEAN SALES", sala: "303.I" },
+            { periodo: 8, dia: "quarta", horario: "18:00 - 20:00", disciplina: "TM222 - MESTIÇAGEM, HISTÓRIA DO BRASIL E AS...", professor: "ROBERTO GUEDES", sala: "301.I" },
+            { periodo: 8, dia: "quarta", horario: "20:00 - 22:00", disciplina: "IM619 - HISTÓRIA DO PODER E DAS IDEIAS POLÍTICAS", professor: "MARCOS CALDAS", sala: "301.I" },
+
+            // --- QUINTA-FEIRA ---
+            { periodo: 1, dia: "quinta", horario: "18:00 - 22:00", disciplina: "IM220 - INTRODUÇÃO AOS ESTUDOS HISTÓRICOS", professor: "NATANAEL SILVA", sala: "204.M" },
+            { periodo: 2, dia: "quinta", horario: "18:00 - 22:00", disciplina: "IM257 - INTRODUÇÃO À CIÊNCIA POLÍTICA", professor: "NELSON ROJAS", sala: "303.M" },
+            { periodo: 3, dia: "quinta", horario: "18:00 - 22:00", disciplina: "TM250 - HISTÓRIA MEDIEVAL II", professor: "RAQUEL ALVITOS", sala: "310.I" },
+            { periodo: 4, dia: "quinta", horario: "18:00 - 22:00", disciplina: "IM203 - HISTÓRIA DA AMÉRICA I", professor: "LUÍS KALIL", sala: "304.M" },
+            { periodo: 5, dia: "quinta", horario: "18:00 - 22:00", disciplina: "TM251 - METEPEH", professor: "LUCIA SILVA", sala: "302.I" },
+            { periodo: 6, dia: "quinta", horario: "18:00 - 22:00", disciplina: "IM250 - HISTÓRIA DO BRASIL III", professor: "ÁLVARO NASCIMENTO", sala: "304.I" },
+            { periodo: 7, dia: "quinta", horario: "18:00 - 22:00", disciplina: "IM645 - BRASIL: DOS ANOS 1960 À ATUALIDADE", professor: "SURAMA PINTO", sala: "303.I" },
+            { periodo: 8, dia: "quinta", horario: "18:00 - 22:00", disciplina: "TM286 - HISTORIOGRAFIA SOBRE A BAIXADA", professor: "ALLOFS BATISTA", sala: "301.I" },
+
+            // --- SEXTA-FEIRA ---
+            { periodo: 1, dia: "sexta", horario: "18:00 - 22:00", disciplina: "IM226 - INTRODUÇÃO À SOCIOLOGIA", professor: "SILVIA FERNANDES", sala: "204.M" },
+            { periodo: 2, dia: "sexta", horario: "18:00 - 22:00", disciplina: "TM720 - FILOSOFIA E EDUCAÇÃO", professor: "AFONSO HENRIQUE DA COSTA", sala: "303.M" },
+            { periodo: 3, dia: "sexta", horario: "18:00 - 22:00", disciplina: "IM224 - TEORIA E METODOLOGIA DA HISTÓRIA", professor: "NATANAEL SILVA", sala: "310.I" },
+            { periodo: 4, dia: "sexta", horario: "18:00 - 22:00", disciplina: "IM202 - HISTÓRIA MODERNA", professor: "ALEXANDRE LAZZARI", sala: "304.M" },
+            { periodo: 5, dia: "sexta", horario: "18:00 - 22:00", disciplina: "IM246 - HISTÓRIA DA AMÉRICA II", professor: "RAFAEL ALONSO", sala: "302.I" },
+            { periodo: 6, dia: "sexta", horario: "18:00 - 22:00", disciplina: "IM247 - HISTÓRIA CONTEMPORÂNEA I", professor: "JEAN SALES", sala: "304.I" },
+            { periodo: 7, dia: "sexta", horario: "18:00 - 22:00", disciplina: "TN602 - LIBRAS", professor: "LUCIANE RANGEL", sala: "303.I" },
+            { periodo: 8, dia: "sexta", horario: "18:00 - 22:00", disciplina: "IM680 - MUNDOS INDÍGENAS AMERICANOS", professor: "LUÍS KALIL", sala: "301.I" }
+        ];
+
+        // --- Lógica da Aplicação ---
+        const tabTurma = document.getElementById('tab-turma');
+        const tabProfessor = document.getElementById('tab-professor');
+        const panelTurma = document.getElementById('panel-turma');
+        const panelProfessor = document.getElementById('panel-professor');
+        
+        const diaSelect = document.getElementById('dia-semana');
+        const periodoSelect = document.getElementById('periodo');
+        const professorSelect = document.getElementById('select-professor');
+
+        const buscarBtn = document.getElementById('buscar-btn');
+        const resultadoDiv = document.getElementById('resultado');
+
+        let activeTab = 'turma';
+
+        // Lógica das abas
+        tabTurma.addEventListener('click', () => {
+            activeTab = 'turma';
+            tabTurma.classList.add('active');
+            tabProfessor.classList.remove('active');
+            panelTurma.classList.remove('hidden');
+            panelProfessor.classList.add('hidden');
+        });
+
+        tabProfessor.addEventListener('click', () => {
+            activeTab = 'professor';
+            tabProfessor.classList.add('active');
+            tabTurma.classList.remove('active');
+            panelProfessor.classList.remove('hidden');
+            panelTurma.classList.add('hidden');
+        });
+
+        function capitalizar(str) {
+            if (!str) return '';
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+        }
+
+        function renderizarResultados(resultados, titulo) {
+            resultadoDiv.innerHTML = ''; 
+
+            if (resultados.length === 0) {
+                resultadoDiv.innerHTML = `
+                    <div class="text-center bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-lg">
+                        <p class="font-bold">Nenhuma disciplina encontrada</p>
+                        <p>Verifique os filtros de busca.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const headerHTML = `<div class="mb-6"><h2 class="text-2xl font-bold text-gray-800">${titulo}</h2></div>`;
+
+            const cardsHTML = resultados.map(aula => `
+                <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300 mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4">
+                        <div class="flex-grow">
+                            <p class="text-base font-semibold text-blue-700">${aula.disciplina}</p>
+                            <p class="text-sm text-gray-500">${activeTab === 'professor' ? `${capitalizar(aula.dia)}-feira | ${aula.periodo}º Período` : capitalizar(aula.professor)}</p>
+                        </div>
+                        <div class="flex items-center gap-6 sm:gap-4 flex-shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0">
+                            <div class="text-left">
+                                <p class="text-xs text-gray-500">Horário</p>
+                                <p class="font-medium text-gray-800 text-sm">${aula.horario}</p>
+                            </div>
+                             <div class="text-left">
+                                <p class="text-xs text-gray-500">Sala</p>
+                                <p class="font-medium text-gray-800 text-sm">${aula.sala}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            resultadoDiv.innerHTML = headerHTML + '<div>' + cardsHTML + '</div>';
+        }
+
+        function buscar() {
+            if (activeTab === 'turma') {
+                const dia = diaSelect.value;
+                const periodo = parseInt(periodoSelect.value, 10);
+                const resultados = cronograma.filter(aula => aula.periodo === periodo && aula.dia === dia);
+                const diaFormatado = capitalizar(dia);
+                renderizarResultados(resultados, `Horário para ${diaFormatado}-feira - ${periodo}º Período`);
+            } else { // Busca por professor
+                const nomeProfessor = professorSelect.value;
+                const resultados = cronograma.filter(aula => aula.professor === nomeProfessor);
+                renderizarResultados(resultados, `Aulas de: ${capitalizar(nomeProfessor)}`);
+            }
+        }
+        
+        function popularProfessores() {
+            const nomes = cronograma.map(aula => aula.professor);
+            const nomesUnicos = [...new Set(nomes)];
+            nomesUnicos.sort((a, b) => a.localeCompare(b)); // Ordena alfabeticamente
+            
+            nomesUnicos.forEach(nome => {
+                if (nome && nome !== "A DEFINIR") {
+                    const option = document.createElement('option');
+                    option.value = nome;
+                    option.textContent = capitalizar(nome);
+                    professorSelect.appendChild(option);
+                }
+            });
+        }
+
+        buscarBtn.addEventListener('click', buscar);
+        
+        window.onload = function() {
+            // Popula o menu de professores
+            popularProfessores();
+        };
+
+    </script>
+</body>
+</html>
 
